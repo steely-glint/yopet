@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>Pet call - pet</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <script src="//code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="https://www.respoke.io/min/respoke.min.js"></script>
+	<link rel="stylesheet" href="vid.css"/>
+    </head>
+    <body>
+      <div id="videoContainer" class="ui-video-container">
+      <div id="remoteVideoContainer" class="ui-video-remote-container"></div>
+      <div id="localVideoContainer" class="ui-video-local-container"></div>
+      </div>
+      <script>
+		// here's the App ID value from the portal:
+		var appid = "36dab89d-a8de-45a5-bcc1-caa76299200a";
+
+		// create a client object using the App ID value from Step 2
+		var client = new respoke.Client({
+		    appId: appid,
+		    developmentMode: true
+		});
+
+			// listen for the 'connect' event
+		client.listen('connect', function() {
+		    $("#videoContainer").attr("style","background-image: url(//robohash.com/owner.png?size=640x480); height: 480px; width: 640px");
+	        });
+	    client.listen('call', function(evt) {
+	      call = evt.call;
+	      if (call.initiator !== true) {
+		  call.answer({constraints: {audio: true, video: true},
+			  onConnect: function(evt){
+				  $(evt.element).addClass('remote-video');
+				  $('#remoteVideoContainer').append(evt.element);
+			  },
+			  onLocalMedia: function(evt){
+				  $(evt.element).addClass('no-video');
+				  $('#localVideoContainer').append(evt.element);
+			  }
+		  });
+	       call.listen('hangup', function() { call = null; });
+             }
+	    });
+	    client.connect({ endpointId: "pet"});
+	 </script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <title>Pet call - owner</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" href="vid.css"/>
+        <script src="//code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="https://www.respoke.io/min/respoke.min.js"></script>
+    </head>
+    <body>
+	    <div id="caller">
+	    <input id="connectButton" type="button" value="Connect" />
+	    <input id="hangupButton" type="button" value="Hangup" />
+    </div>
+
+      <table>
+      <tr> <td colspan="2"><img src="images/petbanner.png" width="50%" height="50%"/></td> </tr>
+      <tr><td rowspan="3"><div id="videoContainer" class="ui-video-container">
+      <div id="remoteVideoContainer" class="ui-video-remote-container"></div>
+      <div id="localVideoContainer" class="ui-video-local-container"></div>
+      </td><td><img src="images/sidebar1.png" width="50%" height="50%"/></td></tr>
+      <tr><td><img src="images/sidebar2.png" width="50%" height="50%"/></td></tr>
+      <tr><td><img src="images/sidebar3.png" width="50%" height="50%"/></td></tr>
+      </table>
+	<script>
+		// here's the App ID value from the portal:
+		var call;
+		var appid = "36dab89d-a8de-45a5-bcc1-caa76299200a";
+
+		// create a client object using the App ID value from Step 2
+		var client = new respoke.Client({
+		    appId: appid,
+		    developmentMode: true
+		});
+
+			// listen for the 'connect' event
+		client.listen('connect', function() {
+	    });
+	    $("#connectButton").click(function(){
+	        var endpoint = client.getEndpoint({"id" : "pet"});
+		call = endpoint.startCall({
+			onConnect: function(evt){
+				    $(evt.element).addClass('remote-video');
+				    $('#remoteVideoContainer').append(evt.element);
+				      },
+		      onLocalMedia: function(evt){
+				    $(evt.element).addClass('local-video');
+				    $('#localVideoContainer').append(evt.element);
+				      }
+		    });
+		call.listen('hangup', function() { call = null; });
+	    });
+	    $("#hangupButton").click(function(){
+		if (call) {
+			call.hangup();
+			$("#localVideoContainer").remove();
+			$("#remoteVideoContainer").remove();
+		  call = null;
+	        }
+	    });
+  	client.connect({ endpointId: "owner" });
+
+	 </script>
+  </body>
+</html>
