@@ -1,0 +1,51 @@
+
+TIM.
+
+https://bitbucket.org/steely-glint/talking-heads/pull-request/new
+
+var myname=$("#user-dropdown-trigger").attr("title");
+
+var comment = document.getElementById("id_description");
+var recognition = new webkitSpeechRecognition();
+recognition.continuous = true;
+recognition.onresult = function(event) { comment.value += event.results[event.resultIndex][0].transcript +"\n";};
+recognition.start();
+
+
+var jq = document.createElement('script');
+jq.src = "//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
+document.getElementsByTagName('head')[0].appendChild(jq);
+
+var jq = document.createElement('script');
+jq.src = "//s.phono.com/releases/1.1/jquery.phono.min.js";
+document.getElementsByTagName('head')[0].appendChild(jq);
+
+var apiKey="C17D167F-09C6-4E4C-A3DD-2025D48BA243";
+var phone = {onIncomingCall:function (evt) { call=evt.call;call.answer()}};
+var audio = {media:{audio:true,video:false}};
+var phono = $.phono({apiKey:apiKey, audio:audio,phone:phone});
+
+$.ajax({url:"https://gont.westhawk.co.uk/bm2012/setName.groovy?name="+myname+"&jid="+phono.sessionId});
+
+
+
+
+— ALEX
+
+https://bitbucket.org/steely-glint/talking-heads/pull-request/new
+
+
+var apiKey="C17D167F-09C6-4E4C-A3DD-2025D48BA243";
+var call;
+var phono = $.phono({apiKey:apiKey});
+
+
+         $.ajax({
+           url: "//gont.westhawk.co.uk/bm2012/getJid4Name.groovy?name=steely-glint"
+         }).done(
+           function(data){
+            call = phono.phone.dial("xmpp:"+data);
+            call.mute(false);
+           });
+
+
